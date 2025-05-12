@@ -48,12 +48,14 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
-  void _incrementCounter() => ref.read(counterProvider.notifier).increment();
-  void _decrementCounter() => ref.read(counterProvider.notifier).decrement();
+  void _incrementCounter() =>
+      ref.read(counterProvider(widget.limit).notifier).increment();
+  void _decrementCounter() =>
+      ref.read(counterProvider(widget.limit).notifier).decrement();
 
   @override
   Widget build(BuildContext context) {
-    final counter = ref.watch(counterProvider);
+    final counter = ref.watch(counterProvider(widget.limit));
 
     return Scaffold(
       appBar: AppBar(
