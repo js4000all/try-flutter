@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Page!??', limit: 5),
+      home: const MyHomePage(title: 'Flutter Demo Page v2', limit: 5),
     );
   }
 }
@@ -48,17 +48,8 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   late final _pureState = _CounterLogic(limit: widget.limit);
 
-  void _incrementCounter() {
-    setState(() {
-      _pureState.increment();
-    });
-  }
-
-  void _decrementCounter() {
-    setState(() {
-      _pureState.decrement();
-    });
-  }
+  void _incrementCounter() => setState(_pureState.increment);
+  void _decrementCounter() => setState(_pureState.decrement);
 
   @override
   Widget build(BuildContext context) {
