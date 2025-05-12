@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'counter_notifier.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -30,35 +32,29 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Page v3', limit: 5),
+      home: const MyHomePage(title: 'Flutter Demo Page v4', limit: 5),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
+class MyHomePage extends ConsumerStatefulWidget {
   const MyHomePage({super.key, required this.title, required this.limit});
 
   final String title;
   final int limit;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  ConsumerState<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  late final _pureState = _CounterLogic(limit: widget.limit);
-
-  void _incrementCounter() => setState(_pureState.increment);
-  void _decrementCounter() => setState(_pureState.decrement);
+class _MyHomePageState extends ConsumerState<MyHomePage> {
+  void _incrementCounter() => ref.read(counterProvider.notifier).increment();
+  void _decrementCounter() => ref.read(counterProvider.notifier).decrement();
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
+    final counter = ref.watch(counterProvider);
+
     return Scaffold(
       appBar: AppBar(
         // TRY THIS: Try changing the color here to a specific color (to
@@ -89,10 +85,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:'),
-            Text(
-              '${_pureState.counter}',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text('$counter', style: Theme.of(context).textTheme.headlineMedium),
           ],
         ),
       ),
@@ -113,24 +106,5 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
-  }
-}
-
-class _CounterLogic {
-  final int limit;
-  int counter = 0;
-
-  _CounterLogic({required this.limit});
-
-  void increment() {
-    if (counter < limit) {
-      counter++;
-    }
-  }
-
-  void decrement() {
-    if (counter > 0) {
-      counter--;
-    }
   }
 }
