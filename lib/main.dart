@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Page v4', limit: 5),
+      home: const MyHomePage(title: 'Flutter Demo Page v5', limit: 5),
     );
   }
 }
@@ -48,14 +48,18 @@ class MyHomePage extends ConsumerStatefulWidget {
 }
 
 class _MyHomePageState extends ConsumerState<MyHomePage> {
+  late final _counterNotifierProvider = getCounterNotifierProvider(
+    widget.limit,
+  );
+
   void _incrementCounter() =>
-      ref.read(counterProvider(widget.limit).notifier).increment();
+      ref.read(_counterNotifierProvider.notifier).increment();
   void _decrementCounter() =>
-      ref.read(counterProvider(widget.limit).notifier).decrement();
+      ref.read(_counterNotifierProvider.notifier).decrement();
 
   @override
   Widget build(BuildContext context) {
-    final counter = ref.watch(counterProvider(widget.limit));
+    final counter = ref.watch(_counterNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(

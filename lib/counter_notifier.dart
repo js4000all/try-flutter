@@ -18,6 +18,7 @@ class CounterNotifier extends StateNotifier<int> {
   }
 }
 
-final counterProvider = StateNotifierProvider.family<CounterNotifier, int, int>(
-  (ref, limit) => CounterNotifier(limit: limit),
-);
+final getCounterNotifierProvider =
+    StateNotifierProvider.family<CounterNotifier, int, int>(
+      (ref, limit) => CounterNotifier(limit: limit),
+    );
