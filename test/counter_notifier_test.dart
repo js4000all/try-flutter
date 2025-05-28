@@ -5,29 +5,26 @@ void main() {
   group('CounterNotifier', () {
     test('初期状態が正しい', () {
       // 準備
-      final notifier = CounterNotifier();
+      final notifier = CounterNotifier(limit: 5);
 
       // 検証
-      expect(notifier.state.count, 0);
-      expect(notifier.state.limit, 5);
-      expect(notifier.state.isLimitReached, false);
+      expect(notifier.state, 0);
     });
 
     test('incrementでカウントが増加する', () {
       // 準備
-      final notifier = CounterNotifier();
+      final notifier = CounterNotifier(limit: 5);
 
       // 実行
       notifier.increment();
 
       // 検証
-      expect(notifier.state.count, 1);
-      expect(notifier.state.isLimitReached, false);
+      expect(notifier.state, 1);
     });
 
     test('limitに達するとそれ以上増加しない', () {
       // 準備
-      final notifier = CounterNotifier();
+      final notifier = CounterNotifier(limit: 5);
 
       // 実行
       for (var i = 0; i < 6; i++) {
@@ -35,13 +32,12 @@ void main() {
       }
 
       // 検証
-      expect(notifier.state.count, 5);
-      expect(notifier.state.isLimitReached, true);
+      expect(notifier.state, 5);
     });
 
     test('decrementでカウントが減少する', () {
       // 準備
-      final notifier = CounterNotifier();
+      final notifier = CounterNotifier(limit: 5);
       notifier.increment();
       notifier.increment();
 
@@ -49,20 +45,18 @@ void main() {
       notifier.decrement();
 
       // 検証
-      expect(notifier.state.count, 1);
-      expect(notifier.state.isLimitReached, false);
+      expect(notifier.state, 1);
     });
 
     test('0未満には減少しない', () {
       // 準備
-      final notifier = CounterNotifier();
+      final notifier = CounterNotifier(limit: 5);
 
       // 実行
       notifier.decrement();
 
       // 検証
-      expect(notifier.state.count, 0);
-      expect(notifier.state.isLimitReached, false);
+      expect(notifier.state, 0);
     });
   });
 }
