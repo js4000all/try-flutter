@@ -6,6 +6,8 @@ void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
+final counterNotifierProvider = getCounterNotifierProvider(5);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -32,26 +34,30 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Page v5', limit: 5),
+      home: MyHomePage(
+        title: 'Flutter Demo Page v5',
+        counterProvider: counterNotifierProvider,
+      ),
     );
   }
 }
 
 class MyHomePage extends ConsumerWidget {
-  const MyHomePage({super.key, required this.title, required this.limit});
+  const MyHomePage({
+    super.key,
+    required this.title,
+    required this.counterProvider,
+  });
 
   final String title;
-  final int limit;
+  final StateNotifierProvider<CounterNotifier, int> counterProvider;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final counterNotifierProvider = getCounterNotifierProvider(limit);
-    final counter = ref.watch(counterNotifierProvider);
+    final counter = ref.watch(counterProvider);
 
-    void incrementCounter() =>
-        ref.read(counterNotifierProvider.notifier).increment();
-    void decrementCounter() =>
-        ref.read(counterNotifierProvider.notifier).decrement();
+    void incrementCounter() => ref.read(counterProvider.notifier).increment();
+    void decrementCounter() => ref.read(counterProvider.notifier).decrement();
 
     return Scaffold(
       appBar: AppBar(
