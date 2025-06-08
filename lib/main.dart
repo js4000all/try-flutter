@@ -6,6 +6,8 @@ void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
+final counterNotifierProvider = getCounterNotifierProvider(5);
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -32,34 +34,30 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Page v5', limit: 5),
+      home: MyHomePage(
+        title: 'Flutter Demo Page v5',
+        counterProvider: counterNotifierProvider,
+      ),
     );
   }
 }
 
-class MyHomePage extends ConsumerStatefulWidget {
-  const MyHomePage({super.key, required this.title, required this.limit});
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({
+    super.key,
+    required this.title,
+    required this.counterProvider,
+  });
 
   final String title;
-  final int limit;
+  final StateNotifierProvider<CounterNotifier, int> counterProvider;
 
   @override
-  ConsumerState<MyHomePage> createState() => _MyHomePageState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final counter = ref.watch(counterProvider);
 
-class _MyHomePageState extends ConsumerState<MyHomePage> {
-  late final _counterNotifierProvider = getCounterNotifierProvider(
-    widget.limit,
-  );
-
-  void _incrementCounter() =>
-      ref.read(_counterNotifierProvider.notifier).increment();
-  void _decrementCounter() =>
-      ref.read(_counterNotifierProvider.notifier).decrement();
-
-  @override
-  Widget build(BuildContext context) {
-    final counter = ref.watch(_counterNotifierProvider);
+    void incrementCounter() => ref.read(counterProvider.notifier).increment();
+    void decrementCounter() => ref.read(counterProvider.notifier).decrement();
 
     return Scaffold(
       appBar: AppBar(
@@ -69,7 +67,7 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
@@ -99,13 +97,13 @@ class _MyHomePageState extends ConsumerState<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: _decrementCounter,
+            onPressed: decrementCounter,
             tooltip: 'Decrement',
             child: const Icon(Icons.remove),
           ),
           const SizedBox(width: 16),
           FloatingActionButton(
-            onPressed: _incrementCounter,
+            onPressed: incrementCounter,
             tooltip: 'Increment',
             child: const Icon(Icons.add),
           ),
