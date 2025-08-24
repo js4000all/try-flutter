@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'counter_notifier.dart';
+import 'package:myapp/limit.dart';
+import 'counter.dart';
 
 void main() {
   runApp(const ProviderScope(child: MyApp()));
 }
 
-final counterNotifierProvider = getCounterNotifierProvider(5);
+final limitProvider = getLimitProvider(5);
+final counterProvider = getCounterProvider(limitProvider);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -35,8 +37,9 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       home: MyHomePage(
-        title: 'Flutter Demo Page v5',
-        counterProvider: counterNotifierProvider,
+        title: 'Flutter Demo Page v6',
+        limitProvider: limitProvider,
+        counterProvider: counterProvider,
       ),
     );
   }
@@ -46,16 +49,20 @@ class MyHomePage extends ConsumerWidget {
   const MyHomePage({
     super.key,
     required this.title,
+    required this.limitProvider,
     required this.counterProvider,
   });
 
   final String title;
-  final StateNotifierProvider<CounterNotifier, int> counterProvider;
+  final StateNotifierProvider<Limit, int> limitProvider;
+  final StateNotifierProvider<Counter, int> counterProvider;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final counter = ref.watch(counterProvider);
 
+    void incrementLimit() => ref.read(limitProvider.notifier).increment();
+    void decrementLimit() => ref.read(limitProvider.notifier).decrement();
     void incrementCounter() => ref.read(counterProvider.notifier).increment();
     void decrementCounter() => ref.read(counterProvider.notifier).decrement();
 
